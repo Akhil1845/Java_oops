@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Micro‑Internships for Students</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #0f0f0f;
+      color: white;
+      overflow-x: hidden;
+    }
+    header {
+      text-align: center;
+      padding: 40px 20px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      font-size: 3rem;
+      background: linear-gradient(90deg, grey 0%, white 50%, rgba(255, 255, 255, 0.766) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0;
+      transform: translateY(-50px);
+      white-space: nowrap;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 90vh;
+      text-align: center;
+      padding: 20px;
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin: 0;
+      background: linear-gradient(90deg, white, grey);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 700px;
+      color: #ccc;
+      margin-top: 15px;
+    }
+    .btn {
+      margin-top: 25px;
+      padding: 12px 28px;
+      background: #ff6f61;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      color: white;
+      transition: background 0.3s ease;
+    }
+    .btn:hover {
+      background: #ff3d3d;
+    }
+    section {
+      padding: 60px 20px;
+      max-width: 1000px;
+      margin: auto;
+    }
+    section h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    section p {
+      color: #aaa;
+      font-size: 1.1rem;
+      line-height: 1.6;
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    /* Modal Styles */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .step {
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      width: 320px;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .step h2 {
+      margin-bottom: 20px;
+      color: white;
+    }
+    .modal-btn {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      background: #ff6f61;
+      border: none;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .modal-btn:hover {
+      background: #ff3d3d;
+    }
+    .close-btn {
+      background: #333;
+    }
+    .close-btn:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body>
+<header id="mainHeader">
+  🚀 Skill - Bridge
+    <div style="font-size: 3.2rem; font-weight: 500; margin-top: 5px;">
+    Micro-Internships for Students
+  </div>
+</header>
+
+
+<div class="hero">
+  <h1 id="mainTitle">Launch Your Career</h1>
+  <p id="subText">
+    Short‑term real‑world projects designed for students to gain industry experience,
+     boost skills, and build strong portfolios.
+  </p>
+  <button class="btn" id="getStartedBtn">Get Started</button>
+</div>
+
+<section class="reveal">
+  <h2>💡 What are Micro‑Internships?</h2>
+  <p>Micro‑internships are short‑term, professional projects that typically last from a few days to a few weeks. 
+    They give students a chance to apply classroom knowledge to real‑world business challenges, build hands‑on experience, 
+    and explore different career paths. These projects help students develop practical skills, expand their professional 
+    network, and strengthen their portfolios, 
+    making them more competitive in the job market.</p>
+</section>
+
+<section class="reveal">
+  <h2>🎯 Why Choose Us?</h2>
+  <p>We connect you with forward‑thinking companies eager for fresh ideas and innovative problem‑solving. 
+    Through our platform, you’ll collaborate on real‑world projects that make a tangible impact, 
+    not just busywork. These experiences give you the opportunity to work alongside industry professionals, 
+    gain hands‑on exposure to cutting‑edge tools, 
+    and develop practical skills that complement your academic learning. </p>
+</section>
+
+<section class="reveal">
+  <h2>📞 Get in Touch</h2>
+  <p>Email: sample123@google.com</p>
+</section>
+
+<!-- Modal -->
+<div class="modal" id="loginModal">
+  <!-- Step 1 -->
+  <div class="step" id="step1">
+    <h2>Join as</h2>
+    <button class="modal-btn" onclick="selectRole('Student')">🎓 Student</button>
+    <button class="modal-btn" onclick="selectRole('Client')">🏢 Client</button>
+    <button class="modal-btn close-btn" id="closeModal">Cancel</button>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step" id="step2" style="display:none;">
+    <h2 id="roleTitle"></h2>
+    <button class="modal-btn">Login</button>
+    <button class="modal-btn" id="signUpBtn">Sign Up</button>
+    <button class="modal-btn close-btn" onclick="backToRole()">Back</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script>
+  // Header animation
+  anime({ targets: '#mainHeader', translateY: [-50, 0], opacity: [0, 1], duration: 1500, easing: 'easeOutExpo' });
+  anime({ targets: '#mainTitle', translateY: [-50, 0], opacity: [0, 1], delay: 300, duration: 1500, easing: 'easeOutExpo' });
+  anime({ targets: '#subText', translateY: [20, 0], opacity: [0, 1], delay: 800, duration: 1200, easing: 'easeOutExpo' });
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  window.addEventListener('scroll', () => {
+    reveals.forEach((el, i) => {
+      const top = el.getBoundingClientRect().top;
+      if (top < window.innerHeight - 100 && !el.classList.contains('revealed')) {
+        el.classList.add('revealed');
+        anime({ targets: el, translateY: [30, 0], opacity: [0, 1], delay: i * 200, duration: 1000, easing: 'easeOutExpo' });
+      }
+    });
+  });
+
+  // Modal functions
+  const getStartedBtn = document.getElementById('getStartedBtn');
+  const loginModal = document.getElementById('loginModal');
+  const closeModal = document.getElementById('closeModal');
+  const signUpBtn = document.getElementById('signUpBtn');
+  let selectedRole = "";
+
+  function animateStep(stepId) {
+    anime({ targets: stepId, opacity: [0, 1], translateY: [20, 0], duration: 500, easing: 'easeOutExpo' });
+  }
+
+  getStartedBtn.addEventListener('click', () => {
+    loginModal.style.display = 'flex';
+    animateStep('#step1');
+  });
+
+  closeModal.addEventListener('click', () => {
+    loginModal.style.display = 'none';
+  });
+
+  function selectRole(role) {
+    selectedRole = role;
+    document.getElementById('roleTitle').innerText = `You selected: ${role}`;
+    document.getElementById('step1').style.display = 'none';
+    document.getElementById('step2').style.display = 'block';
+    animateStep('#step2');
+  }
+
+  function backToRole() {
+    document.getElementById('step2').style.display = 'none';
+    document.getElementById('step1').style.display = 'block';
+    animateStep('#step1');
+  }
+
+  // Redirect to signup page based on role
+  signUpBtn.addEventListener('click', () => {
+    if (selectedRole === "Student") {
+      window.location.href = "student_signup.html";
+    } else if (selectedRole === "Client") {
+      window.location.href = "client_signup.html";
+    } else {
+      alert("Please select a role first.");
+    }
+  });
+  loginModal.addEventListener('click', () =>{
+    if (selectedRole === "Student"){
+      window.location.href = "student_login.html"
+    }else if (selectedRole === "Client" ){
+      window.location.href = 'client_login.html'
+    }else{
+      alert("Please select a role first.");
+    }
+  })
+
+  window.addEventListener('click', (e) => {
+    if (e.target === loginModal) {
+      loginModal.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>
