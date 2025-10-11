@@ -1,306 +1,410 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Student Dashboard</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-
-  <style>
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-    }
-    body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(145deg, #0d0d0d, #1a1a1a);
-      color: #fff;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-    /* Sidebar */
-    .sidebar {
-      width: 270px;
-      background: rgba(30, 30, 30, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 25px;
-      border-right: 1px solid rgba(255,255,255,0.05);
-      transition: transform 0.4s ease;
-      position: relative;
-    }
-    .sidebar.hidden {
-      transform: translateX(-100%);
-    }
-    .sidebar h2 {
-      font-size: 22px;
-      color: #ff6f61;
-      margin-bottom: 25px;
-      text-align: center;
-    }
-    .profile-info {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    .avatar {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background: #333;
-      display: inline-block;
-      margin-bottom: 10px;
-    }
-    .profile-info p {
-      font-size: 14px;
-      color: #ccc;
-      margin: 3px 0;
-    }
-    .sidebar a {
-      display: block;
-      padding: 10px 15px;
-      margin: 8px 0;
-      color: #ccc;
-      text-decoration: none;
-      border-radius: 6px;
-      transition: 0.3s;
-    }
-    .sidebar a:hover {
-      background: #ff6f61;
-      color: white;
-    }
-    .logout-btn {
-      margin-top: 20px;
-      background: #ff6f61;
-      padding: 10px;
-      border-radius: 8px;
-      color: white;
-      border: none;
-      width: 100%;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-    .logout-btn:hover {
-      background: #ff3d3d;
-    }
-    /* Main */
-    .main {
-  flex: 1;
-  padding: 60px 30px 30px; /* extra top padding */
-  overflow-y: auto;
-  position: relative;
-}
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  .menu-btn {
-  position: fixed;
-  top: 20px;
-  left: 290px; /* push right, slightly past sidebar width */
-  background: #ff6f61;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  font-size: 18px;
-  cursor: pointer;
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.menu-btn:hover {
-  background: #ff3d3d;
-  transform: scale(1.05);
-}
-
-    /* Cards */
-    .card {
-      background: rgba(40, 40, 40, 0.9);
-      backdrop-filter: blur(6px);
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-      transition: transform 0.3s ease;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    .card h3 {
-      margin-bottom: 12px;
-      color: #ff6f61;
-    }
-    /* Form */
-    #initialForm input, #initialForm select {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 6px;
-      border: none;
-      outline: none;
-    }
-    #initialForm button {
-      margin-top: 10px;
-      background-color: #ff6f61;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #initialForm button:hover {
-      background-color: #ff3d3d;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Student Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+body{min-height:100vh;background:linear-gradient(120deg,#e0f7fa,#b3e5fc,#81d4fa,#a7c7e7,#dbeafe);background-size:1200% 1200%;animation:bgmove 16s ease infinite;color:#253858;display:flex;overflow-x:hidden;}
+@keyframes bgmove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%;}}
+.menu{position:fixed;top:0;left:0;width:85px;height:100%;background:#ffffff12;padding:20px 20px 20px 0;backdrop-filter:blur(5px);box-shadow:8px 0px 9px #00000014;transition:.3s;overflow-y:auto;z-index:999;display:flex;flex-direction:column;}
+.menu:hover{width:260px;}
+.menu-content{display:flex;flex-direction:column;height:100%;}
+.menu-content li{list-style:none;border-radius:0 50px 50px 0;margin-bottom:20px;padding-left:20px;transition:.3s;display:flex;align-items:center;}
+.menu-content li:hover{background:#33a1e4;box-shadow:0 0 25px rgba(51,161,228,0.6);}
+.menu-content li:last-child{margin-top:auto;}
+.menu-content li span:nth-child(2){display:none;margin-left:18px;font-weight:600;color:#fff;}
+.menu:hover li span:nth-child(2){display:block;}
+.menu a{display:flex;align-items:center;text-decoration:none;color:inherit;width:100%;cursor:pointer;}
+.material-symbols-outlined{padding:10px;font-size:25px;border-radius:50%;background:#1e90ff;box-shadow:0 0 20px rgba(51,161,228,0.6);display:flex;justify-content:center;align-items:center;margin-right:10px;transition:.3s;}
+.menu-content li:hover .material-symbols-outlined{background:#fff;color:#1976d2;box-shadow:0 0 25px #90caf9;}
+.dashboard-container{margin-left:85px;padding:40px 20px;flex:1;transition:margin-left .3s;display:flex;flex-direction:column;}
+.menu:hover ~ .dashboard-container{margin-left:260px;}
+.dashboard-section{display:none;flex-direction:column;width:100%;}
+.dashboard-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:30px;position:relative;}
+.dashboard-header h1{font-size:2rem;font-weight:700;color:#253858;margin:0;}
+.internships-container{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;width:100%;}
+.internship-card{background:#6666;padding:15px;border-radius:10px;box-shadow:0 5px 10px rgba(0,0,0,0.2);display:flex;flex-direction:column;justify-content:space-between;cursor:pointer;transition:.3s;color:#fff;}
+.internship-card:hover{background:#1e90ff;}
+.internship-card h3,.internship-card p,.internship-card button{color:#fff;}
+.internship-card button{margin-top:10px;background:#1e90ff;border:none;border-radius:5px;padding:8px;cursor:pointer;font-weight:600;transition:.3s;}
+.internship-card button:hover{background:#0f70d4;}
+@media(max-width:768px){.internships-container{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));}}
+.profile-container{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;width:100%;color:#253858;}
+.profile-name{font-size:2rem;font-weight:600;margin-bottom:8px;color:#253858;}
+.profile-email{font-size:1.1rem;margin-bottom:22px;color:#56789a;}
+.profile-details{display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px;}
+.profile-field{font-size:1.05rem;color:#253858;}
+.profile-btn{background:#70baff;color:#fff;border:none;border-radius:6px;font-size:1rem;font-weight:600;padding:12px 32px;cursor:pointer;transition:.3s;}
+.profile-btn:hover{background:#3789cb;}
+.results-container{min-height:70vh;display:flex;flex-direction:column;gap:15px;color:#253858;}
+.result-card{background:#444;padding:15px;border-radius:10px;box-shadow:0 5px 10px rgba(0,0,0,0.2);color:#fff;}
+.result-card p{margin:5px 0;}
+.settings-container{min-height:70vh;display:flex;flex-direction:column;gap:15px;color:#253858;}
+.settings-container label{font-weight:600;margin-bottom:5px;}
+.settings-container input,.settings-container select{padding:10px;border-radius:5px;border:none;margin-bottom:15px;width:300px;max-width:100%;}
+.settings-btn{background:#1e90ff;color:#fff;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;font-weight:600;width:150px;}
+.settings-btn:hover{background:#0f70d4;}
+.help-container{min-height:70vh;display:flex;flex-direction:column;gap:15px;color:#253858;}
+.help-item{background:#ddd;padding:12px;border-radius:8px;box-shadow:0 3px 8px rgba(0,0,0,0.2);color:#253858;}
+.test-container{display:flex;flex-direction:column;gap:15px;color:#253858;}
+.test-card{background:#ccc;padding:15px;border-radius:10px;box-shadow:0 5px 10px rgba(0,0,0,0.2);cursor:pointer;transition:.3s;color:#253858;}
+.test-card:hover{background:#1e90ff;color:#fff;}
+#testModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000;}
+#testModalContent{background:#222;padding:20px;border-radius:12px;max-width:600px;width:90%;color:#fff;max-height:70vh;overflow-y:auto;}
+#testQuestions div{margin-bottom:10px;}
+#testQuestions input{width:100%;padding:8px;margin-top:4px;border-radius:5px;border:none;}
+.modal-btn{margin-top:15px;padding:10px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:600;}
+.submit-btn{background:#1e90ff;color:#fff;}
+.close-btn{background:#555;color:#fff;margin-left:10px;}
+#internshipModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);justify-content:center;align-items:center;z-index:2000;}
+#internshipModalContent{background:#222;padding:20px;border-radius:12px;max-width:600px;width:90%;color:#fff;max-height:80vh;overflow-y:auto;}
+#internshipModalContent h2{margin-bottom:10px;}
+#internshipModalContent p{margin-bottom:15px;}
+#notificationBell{position:relative;cursor:pointer;}
+#notificationBell .material-symbols-outlined{font-size:32px;background:#1e90ff;color:#fff;padding:10px;border-radius:50%;transition:.3s;}
+#notificationBell:hover .material-symbols-outlined{background:#0f70d4;}
+#notificationBadge{position:absolute;top:0;right:0;background:red;color:#fff;font-size:0.7rem;padding:2px 6px;border-radius:50%;display:none;}
+#notificationDropdown{position:absolute;top:45px;right:0;background:#fff;color:#000;min-width:200px;border-radius:8px;box-shadow:0 5px 15px rgba(0,0,0,0.3);display:none;z-index:500;max-height:300px;overflow-y:auto;padding:10px;}
+#notificationDropdown .notif-item{padding:8px;border-bottom:1px solid #ccc;font-size:0.9rem;}
+#notificationDropdown .notif-item:last-child{border-bottom:none;}
+</style>
 </head>
 <body>
 
-  <div class="sidebar" id="sidebar">
-    <h2>🎓 Student Panel</h2>
-    <div class="profile-info">
-      <div class="avatar"></div>
-      <p><strong id="name">Loading...</strong></p>
-      <p id="email">Loading...</p>
+<!-- ==================== MENU ==================== -->
+<div class="menu">
+  <ul class="menu-content">
+    <li><a onclick="navigate('dashboard')"><span class="material-symbols-outlined">dashboard</span><span>Dashboard</span></a></li>
+    <li><a onclick="navigate('test')"><span class="material-symbols-outlined">school</span><span>Test</span></a></li>
+    <li><a onclick="navigate('profile')"><span class="material-symbols-outlined">person</span><span>Profile</span></a></li>
+    <li><a onclick="navigate('results')"><span class="material-symbols-outlined">grading</span><span>Results</span></a></li>
+    <li><a onclick="navigate('settings')"><span class="material-symbols-outlined">settings</span><span>Settings</span></a></li>
+    <li><a onclick="navigate('help')"><span class="material-symbols-outlined">help</span><span>Help</span></a></li>
+    <li><a onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Logout</span></a></li>
+  </ul>
+</div>
+
+<!-- ==================== DASHBOARD CONTAINER ==================== -->
+<div class="dashboard-container">
+  <!-- Dashboard Section -->
+  <div class="dashboard-section" id="dashboard-content">
+    <div class="dashboard-header">
+      <h1>Welcome, <span id="studentNameDashboard">Student</span>!</h1>
+      <div id="notificationBell">
+        <span class="material-symbols-outlined">notifications</span>
+        <span id="notificationBadge">0</span>
+      </div>
+      <div id="notificationDropdown"></div>
     </div>
-    <a href="#">🏠 Dashboard</a>
-    <a href="#">🧪 Tests</a>
-    <a href="#">💼 Internships</a>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="internships-container" id="internshipContainer"></div>
   </div>
 
-  <div class="main" id="mainContent">
-    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-    <h1>Welcome to Your Dashboard</h1>
-
-    <div id="initialForm" class="card" style="display: none;">
-      <h3>👋 Welcome! Tell us about yourself</h3>
-      <label>Which class are you studying?</label>
-      <input type="text" id="studentClass" placeholder="e.g., B.Tech 3rd Year">
-      
-      <label>Select your interests:</label>
-      <div class="interests">
-        <label><input type="checkbox" value="Coding"> Coding</label>
-        <label><input type="checkbox" value="Editing"> Editing</label>
-        <label><input type="checkbox" value="Photoshop"> Photoshop</label>
-        <label><input type="checkbox" value="DSV"> DSV related</label>
-        <label><input type="checkbox" value="DBMS"> DBMS related</label>
-        <label><input type="checkbox" value="Excel/Word"> Excel / Word</label>
-      </div>
-      <button onclick="saveStudentDetails()">Submit</button>
-    </div>
-
-    <div id="dashboardCards" style="display: none;">
-      <div class="card">
-        <h3>📌 Suggested Internships</h3>
-        <ul id="internshipList"></ul>
-      </div>
-
-      <div class="card">
-        <h3>🧪 Upcoming Tests</h3>
-        <ul id="testList"></ul>
+  <!-- Test Section -->
+  <div class="dashboard-section" id="test-content">
+    <h2>Tests / Assignments</h2>
+    <div class="test-container" id="testContainer"></div>
+    <div id="testModal">
+      <div id="testModalContent">
+        <h3 id="testModalTitle"></h3>
+        <div id="testQuestions"></div>
+        <button class="modal-btn submit-btn" onclick="submitTest()">Submit Test</button>
+        <button class="modal-btn close-btn" onclick="closeTestModal()">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+  <!-- Profile Section -->
+  <div class="dashboard-section" id="profile-content">
+    <div class="profile-container">
+      <div class="profile-name">Name: <span id="studentName">Student Name</span></div>
+      <div class="profile-email" id="studentEmail">email@example.com</div>
+      <div class="profile-details">
+        <div class="profile-field">ID: <span id="studentId"></span></div>
+        <div class="profile-field">Class: <span id="studentClass"></span></div>
+        <div class="profile-field">Stream: <span id="studentStream"></span></div>
+        <div class="profile-field">Program: <span id="studentProgram"></span></div>
+        <div class="profile-field">Semester: <span id="studentSemester"></span></div>
+        <div class="profile-field">Skills: <span id="studentSkills"></span></div>
+        <div class="profile-field">Phone: <span id="studentPhone"></span></div>
+        <div class="profile-field">Address: <span id="studentAddress"></span></div>
+      </div>
+      <button class="profile-btn" onclick="window.location.href='update_profile.html'">Update Profile</button>
+    </div>
+  </div>
 
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyAhw5lfVrBhYTyW2FbdeBL3FOo1bX3bXKk",
-      authDomain: "micro-internship-for-students.firebaseapp.com",
-      projectId: "micro-internship-for-students",
-      storageBucket: "micro-internship-for-students.appspot.com",
-      messagingSenderId: "776003164782",
-      appId: "1:776003164782:web:eb7c8ce0d923ec9985647f"
-    };
+  <!-- Results Section -->
+  <div class="dashboard-section" id="results-content">
+    <h2>Results / Scores</h2>
+    <div class="results-container" id="resultsContainer"><p>No results available yet.</p></div>
+  </div>
 
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+  <!-- Settings Section -->
+  <div class="dashboard-section" id="settings-content">
+    <h2>Settings / Preferences</h2>
+    <div class="settings-container">
+      <label for="themeSelect">Theme</label>
+      <select id="themeSelect">
+        <option value="light">Light</option>
+        <option value="dark" selected>Dark</option>
+      </select>
+      <label for="passwordInput">Change Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter new password" />
+      <label for="notificationsSelect">Notifications</label>
+      <select id="notificationsSelect">
+        <option value="all">All</option>
+        <option value="important">Important Only</option>
+        <option value="none">None</option>
+      </select>
+      <button class="settings-btn" onclick="saveSettings()">Save Settings</button>
+    </div>
+  </div>
 
-    const nameSpan = document.getElementById('name');
-    const emailSpan = document.getElementById('email');
-    const initialForm = document.getElementById('initialForm');
-    const dashboardCards = document.getElementById('dashboardCards');
+  <!-- Help Section -->
+  <div class="dashboard-section" id="help-content">
+    <h2>Help / Support</h2>
+    <div class="help-container">
+      <div class="help-item">FAQ: How to update your profile?</div>
+      <div class="help-item">FAQ: How to attempt a test?</div>
+      <div class="help-item">Contact Support: support@example.com</div>
+    </div>
+  </div>
+</div>
 
-    auth.onAuthStateChanged(async (user) => {
-      if (!user) {
-        window.location.href = "student_login.html";
-        return;
-      }
+<!-- ==================== INTERNSHIP MODAL ==================== -->
+<div id="internshipModal">
+  <div id="internshipModalContent">
+    <h2 id="internshipTitle"></h2>
+    <p id="internshipCompany"></p>
+    <p id="internshipDomain"></p>
+    <p id="internshipDescription"></p>
+    <p id="internshipContact"></p>
+    <button class="modal-btn submit-btn" id="applyInternshipBtn">Apply</button>
+    <button class="modal-btn close-btn" onclick="closeInternshipModal()">Close</button>
+  </div>
+</div>
 
-      emailSpan.innerText = user.email;
+<script>
+// ------------------- GLOBAL VARIABLES -------------------
+let studentData = {};
+let currentTest = null;
+const sections = document.querySelectorAll(".dashboard-section");
+const notificationBell = document.getElementById("notificationBell");
+const notificationBadge = document.getElementById("notificationBadge");
+const notificationDropdown = document.getElementById("notificationDropdown");
 
-      const docRef = db.collection("students").doc(user.uid);
-      const doc = await docRef.get();
+// ------------------- NOTIFICATIONS -------------------
+notificationBell.addEventListener("click",()=>{ 
+  notificationDropdown.style.display = notificationDropdown.style.display==="block"?"none":"block"; 
+});
+async function loadNotifications(){
+  try{
+    if(!studentData.id) return;
+    const res = await fetch(`http://localhost:8080/api/notifications/student/${studentData.id}`);
+    if(!res.ok) throw new Error("Failed to load notifications");
+    const notifications = await res.json();
 
-      if (doc.exists) {
-        const data = doc.data();
-        nameSpan.innerText = data.name || "Unknown";
-        
-        if (!data.class || !data.interests) {
-          initialForm.style.display = "block";
-        } else {
-          loadContent(data.interests);
-        }
-      } else {
-        nameSpan.innerText = "New User";
-        initialForm.style.display = "block";
-      }
+    notificationBadge.innerText = notifications.length; 
+    notificationBadge.style.display = notifications.length > 0 ? "block" : "none";
+    notificationDropdown.innerHTML = "";
+
+    notifications.forEach(n=>{
+      const div=document.createElement("div"); div.className="notif-item";
+      if(n.status){
+        div.innerText=`Your application for ${n.internshipTitle||'an internship'} is ${n.status.toUpperCase()}`;
+        if(n.status==="approved") div.style.color="green";
+        else if(n.status==="rejected") div.style.color="red";
+      } else div.innerText=n.message;
+      notificationDropdown.appendChild(div);
     });
+  }catch(err){ console.error(err); }
+}
 
-    function saveStudentDetails() {
-      const studentClass = document.getElementById('studentClass').value;
-      const checkboxes = document.querySelectorAll('.interests input[type="checkbox"]');
-      const interests = [];
-      checkboxes.forEach(cb => {
-        if (cb.checked) interests.push(cb.value);
-      });
+// ------------------- STUDENT DATA -------------------
+async function fetchStudentData(){
+  try{
+    const studentId = localStorage.getItem("studentId");
+    if(!studentId){ alert("No student logged in."); window.location.href="landingpage.html"; return; }
+    const res = await fetch(`http://localhost:8080/api/students/${studentId}`);
+    if(!res.ok) throw new Error("Failed to fetch student data");
+    const data = await res.json();
+    studentData = {
+      id:data.id, name:data.name, email:data.email, 
+      className:data.class_name, stream:data.stream, program:data.program, semester:data.semester, 
+      skills:data.skills, phone:data.phone, address:data.address
+    };
+    updateProfileView();
+    document.getElementById("studentNameDashboard").innerText = studentData.name;
+  }catch(err){ console.error(err); alert("Failed to load student data."); }
+}
+function updateProfileView(){
+  document.getElementById("studentId").innerText = studentData.id||"";
+  document.getElementById("studentName").innerText = studentData.name||"";
+  document.getElementById("studentEmail").innerText = studentData.email||"";
+  document.getElementById("studentClass").innerText = studentData.className||"";
+  document.getElementById("studentStream").innerText = studentData.stream||"";
+  document.getElementById("studentProgram").innerText = studentData.program||"";
+  document.getElementById("studentSemester").innerText = studentData.semester||"";
+  document.getElementById("studentSkills").innerText = studentData.skills||"";
+  document.getElementById("studentPhone").innerText = studentData.phone||"";
+  document.getElementById("studentAddress").innerText = studentData.address||"";
+}
 
-      const user = auth.currentUser;
-      if (!user) return;
+// ------------------- NAVIGATION -------------------
+function showSection(id){ sections.forEach(s=>s.style.display="none"); document.getElementById(id).style.display="flex"; }
+function navigate(page){
+  switch(page){
+    case "dashboard": showSection("dashboard-content"); loadInternships(); break;
+    case "profile": showSection("profile-content"); updateProfileView(); break;
+    case "test": showSection("test-content"); loadTests(); break;
+    case "results": showSection("results-content"); loadResults(); break;
+    case "settings": showSection("settings-content"); break;
+    case "help": showSection("help-content"); break;
+  }
+}
 
-      db.collection("students").doc(user.uid).set({
-        class: studentClass,
-        interests: interests
-      }, { merge: true }).then(() => {
-        initialForm.style.display = "none";
-        loadContent(interests);
-      });
-    }
+// ------------------- INTERNSHIPS -------------------
+async function loadInternships(){
+  const container = document.getElementById("internshipContainer");
+  container.innerHTML="";
+  try{
+    const resInternships = await fetch("http://localhost:8080/api/internships");
+    if(!resInternships.ok) throw new Error("Failed to fetch internships");
+    const internships = await resInternships.json();
 
-    function loadContent(interests) {
-      dashboardCards.style.display = "block";
-      const internshipList = document.getElementById('internshipList');
-      const testList = document.getElementById('testList');
+    const resEnrollments = await fetch(`http://localhost:8080/api/enrollments/student/${studentData.id}`);
+    const enrollments = resEnrollments.ok ? await resEnrollments.json() : [];
 
-      internshipList.innerHTML = '';
-      testList.innerHTML = '';
+    internships.forEach(i=>{
+      const card=document.createElement("div"); card.className="internship-card";
+      const enrollment = enrollments.find(e=>e.internship.id===i.id);
+      let statusText = enrollment ? `Status: ${enrollment.status}` : "";
+      let buttonHTML = enrollment ? `<button disabled>Already Applied</button>` : `<button onclick='openInternshipModal(${JSON.stringify(i).replaceAll("'", "&apos;")})'>View & Apply</button>`;
+      
+      // Show Company and Domain explicitly
+      card.innerHTML = `
+        <h3>${i.title}</h3>
+        <p><strong>Company:</strong> ${i.company}</p>
+        <p><strong>Domain:</strong> ${i.domain}</p>
+        ${statusText ? `<p>${statusText}</p>` : ""}
+        ${buttonHTML}
+      `;
+      container.appendChild(card);
+    });
+  }catch(err){ console.error(err); container.innerHTML="<p>Failed to load internships</p>"; }
+}
 
-      interests.forEach(topic => {
-        internshipList.innerHTML += `<li>${topic} Internship at Top Company</li>`;
-        testList.innerHTML += `<li>${topic} Test - Coming Soon</li>`;
-      });
-    }
+function openInternshipModal(internship){
+  document.getElementById("internshipTitle").innerText = internship.title;
+  document.getElementById("internshipCompany").innerText = "Company: "+internship.company;
+  document.getElementById("internshipDomain").innerText = "Domain: "+internship.domain;
+  document.getElementById("internshipDescription").innerText = "Description: "+internship.description;
+  document.getElementById("internshipContact").innerText = "Contact: "+internship.contact;
 
-    function logout() {
-      auth.signOut().then(() => {
-        window.location.href = "student_login.html";
-      });
-    }
+  fetch(`http://localhost:8080/api/enrollments/student/${studentData.id}`)
+  .then(res=>res.json())
+  .then(enrollments=>{
+    const alreadyApplied = enrollments.some(e=>e.internship.id===internship.id);
+    const btn = document.getElementById("applyInternshipBtn");
+    btn.innerText = alreadyApplied ? "Already Applied" : "Apply";
+    btn.disabled = alreadyApplied;
+    btn.onclick = alreadyApplied ? null : ()=>applyInternship(Number(internship.id));
+  });
+  document.getElementById("internshipModal").style.display="flex";
+}
+function closeInternshipModal(){ document.getElementById("internshipModal").style.display="none"; }
+async function applyInternship(internshipId){
+  try{
+    if(!studentData.id){ alert("Student not logged in!"); return;}
+    const payload={ studentId:Number(studentData.id) };
+    const res=await fetch(`http://localhost:8080/api/enrollments/apply?internshipId=${internshipId}`,{
+      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)
+    });
+    if(!res.ok) throw new Error("Failed to apply");
+    alert("Applied successfully!"); closeInternshipModal(); loadInternships();
+  }catch(err){ console.error(err); alert("Failed to apply"); }
+}
 
-    function toggleSidebar() {
-      document.getElementById('sidebar').classList.toggle('hidden');
-    }
-  </script>
-  <script src="dashboard.js"></script>
+// ------------------- TESTS -------------------
+async function loadTests(){
+  const container = document.getElementById("testContainer"); 
+  container.innerHTML="";
+  try{
+    const res = await fetch("http://localhost:8080/api/tests");
+    if(!res.ok) throw new Error("Failed to fetch tests");
+    const tests = await res.json();
+    tests.forEach(t=>{
+      const div = document.createElement("div"); 
+      div.className="test-card"; 
+      div.innerText=t.title;
+      div.onclick = ()=>openTestModal(t);
+      container.appendChild(div);
+    });
+  }catch(err){ console.error(err); container.innerHTML="<p>Failed to load tests</p>"; }
+}
+function openTestModal(test){
+  currentTest = test;
+  document.getElementById("testModalTitle").innerText = test.title;
+  const questionsDiv = document.getElementById("testQuestions"); questionsDiv.innerHTML = "";
+  if(!test.questions || test.questions.length===0){ questionsDiv.innerHTML="<p>No questions available.</p>"; return;}
+  test.questions.forEach((q,i)=>{
+    const div=document.createElement("div");
+    div.innerHTML=`<label>${i+1}. ${q.question}</label><input type="text" id="q${i}" placeholder="Enter your answer"/>`;
+    questionsDiv.appendChild(div);
+  });
+  document.getElementById("testModal").style.display="flex";
+}
+function closeTestModal(){ document.getElementById("testModal").style.display="none"; }
+async function submitTest(){
+  if(!currentTest){ alert("No test selected"); return; }
+  const answers = currentTest.questions.map((q,i)=>document.getElementById(`q${i}`)?.value.trim()||"");
+  try{
+    const payload={ studentId:Number(studentData.id), testId:Number(currentTest.id), answers };
+    const res = await fetch(`http://localhost:8080/api/results/submit`, { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) });
+    if(!res.ok){ const errText = await res.text(); throw new Error(errText); }
+    const result = await res.json();
+    alert(`Test submitted successfully!\nScore: ${result.marks} / ${result.maxMarks}`);
+    closeTestModal(); loadResults();
+  }catch(err){ console.error(err); alert("Failed to submit test. Check console."); }
+}
 
+// ------------------- RESULTS -------------------
+async function loadResults(){
+  const container = document.getElementById("resultsContainer");
+  container.innerHTML="<p>Loading results...</p>";
+  try{
+    const res = await fetch(`http://localhost:8080/api/results/student/${studentData.id}`);
+    if(!res.ok) throw new Error(`Failed to fetch results: ${res.status}`);
+    const results = await res.json();
+    if(!results || results.length===0){ container.innerHTML="<p>No results available yet.</p>"; return; }
+    container.innerHTML="";
+    results.forEach(r=>{
+      const div = document.createElement("div"); div.className="result-card";
+      let correctAnswersHTML = r.correctAnswers && r.correctAnswers.length>0 ? `<p><strong>Correct Answers:</strong> ${r.correctAnswers.join(", ")}</p>` : "";
+      div.innerHTML = `
+        <p><strong>Test:</strong> ${r.test?.title || 'N/A'}</p>
+        <p><strong>Score:</strong> ${r.marks} / ${r.maxMarks}</p>
+        ${correctAnswersHTML}
+        <p><strong>Date:</strong> ${r.createdAt ? new Date(r.createdAt).toLocaleString() : 'N/A'}</p>`;
+      container.appendChild(div);
+    });
+  }catch(err){ console.error(err); container.innerHTML=`<p style="color:red;">Failed to load results: ${err.message}</p>`; }
+}
+
+// ------------------- SETTINGS & LOGOUT -------------------
+function saveSettings(){ alert("Settings saved!"); }
+function logout(){ localStorage.removeItem("studentId"); window.location.href="landingpage.html"; }
+
+// ------------------- INITIALIZE -------------------
+window.addEventListener("DOMContentLoaded", async()=>{
+  await fetchStudentData();
+  navigate("dashboard");
+  loadNotifications();
+});
+setInterval(loadNotifications,15000);
+</script>
 </body>
 </html>
