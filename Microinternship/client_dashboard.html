@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client Dashboard</title>
+<link rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;background:linear-gradient(#3d1a00,#000);font-family:'Poppins',sans-serif;color:#fff;}
+.menu::-webkit-scrollbar{display:none}
+.menu{position:fixed;top:0;left:0;width:85px;height:100%;transition:.3s;overflow:hidden scroll;background:#ffffff12;padding:20px 20px 20px 0;backdrop-filter:blur(5px);box-shadow:8px 0 9px #00000014;z-index:999;}
+.menu:hover{width:260px}
+.menu:hover li span:nth-child(2){display:block}
+.menu-content{display:flex;flex-direction:column;height:100%}
+.menu-content li{list-style:none;border-radius:0 50px 50px 0;transition:.3s;margin-bottom:20px;padding-left:20px}
+.menu-content li:hover{background:#FF8C00;box-shadow:0 0 25px rgba(255,140,0,.6)}
+.menu-content li:last-child{margin-top:auto}
+.menu-content li span:nth-child(2){display:none}
+a{text-decoration:none;color:rgb(213,213,213);display:flex;align-items:center;cursor:pointer}
+.material-symbols-outlined{padding:10px;font-size:25px;margin-right:10px;border-radius:50%;background:#FF8000;box-shadow:0 0 20px rgba(255,128,0,.6);display:flex;justify-content:center;align-items:center;}
+.content{margin-left:100px;padding:40px}
+.welcome{font-size:28px;font-weight:600;margin-bottom:20px;color:#FF8C00}
+
+/* Profile Card */
+.profile-card{display:none;background:#ffffff10;border-radius:12px;padding:20px;max-width:600px;box-shadow:0 0 15px rgba(0,0,0,.3);}
+.profile-card h2{margin-bottom:15px;color:#FF8C00}
+.profile-field{margin:8px 0}
+.label{font-weight:600;color:#ffa94d}
+.edit-btn{margin-top:20px;padding:10px 16px;background:#FF8C00;border:none;border-radius:6px;color:#fff;font-weight:600;cursor:pointer;}
+
+/* Internship Section */
+#internshipSection{display:none;margin-top:30px;max-width:600px;}
+form{display:flex;flex-direction:column;gap:12px}
+form input,form textarea{padding:10px;border:none;border-radius:6px}
+form button{padding:10px;background:#FF8C00;color:white;border:none;border-radius:6px;cursor:pointer}
+#postedInternships{margin-top:20px;}
+#postedInternships div{margin-top:10px;background:#ffffff12;padding:10px;border-radius:8px;display:flex;justify-content:space-between;align-items:flex-start;flex-direction:column;}
+#postedInternships button{padding:4px 8px;background:#FF8C00;border:none;border-radius:5px;color:white;cursor:pointer;font-size:12px}
+
+/* Results Section */
+#resultsSection{display:none;margin-top:30px;max-width:800px;}
+#searchBox{margin-bottom:15px;padding:8px;width:100%;border:none;border-radius:6px;}
+#resultsContainer div{background:#ffffff12;padding:12px;border-radius:8px;margin-bottom:10px;}
+</style>
+</head>
+<body>
+<div class="menu">
+  <ul class="menu-content">
+    <li><a onclick="navigate('home')"><span class="material-symbols-outlined">home</span><span>Home</span></a></li>
+    <li><a onclick="navigate('profile')"><span class="material-symbols-outlined">person</span><span>Profile</span></a></li>
+    <li><a onclick="navigate('internship')"><span class="material-symbols-outlined">work</span><span>Add Internship</span></a></li>
+    <li><a onclick="window.location.href='upload_test.html'"><span class="material-symbols-outlined">description</span><span>Upload Test</span></a></li>
+    <li><a onclick="window.location.href='registration.html'"><span class="material-symbols-outlined">assignment</span><span>Registration</span></a></li>
+    <li><a onclick="window.location.href='test_results.html'"><span class="material-symbols-outlined">leaderboard</span><span>Results</span></a></li>
+    <li><a onclick="logout()"><span class="material-symbols-outlined">logout</span><span>Logout</span></a></li>
+  </ul>
+</div>
+
+<div class="content">
+  <h1 class="welcome">Welcome, <span id="clientName"></span> 👋</h1>
+  <p>Manage your profile, post internships, or view student results.</p>
+
+  <!-- PROFILE CARD -->
+  <div class="profile-card" id="profileCard">
+    <h2>Your Profile</h2>
+    <div class="profile-field"><span class="label">Company:</span> <span id="p_company"></span></div>
+    <div class="profile-field"><span class="label">Email:</span> <span id="p_email"></span></div>
+    <div class="profile-field"><span class="label">Phone:</span> <span id="p_phone"></span></div>
+    <div class="profile-field"><span class="label">Address:</span> <span id="p_address"></span></div>
+    <div class="profile-field"><span class="label">Contact Person:</span> <span id="p_contact"></span></div>
+    <div class="profile-field"><span class="label">Details:</span> <span id="p_details"></span></div>
+    <button class="edit-btn" onclick="window.location.href='update_client.html'">Edit Profile</button>
+  </div>
+
+  <!-- INTERNSHIP -->
+  <div id="internshipSection">
+    <h2>Add Internship</h2>
+    <form id="internshipForm">
+      <label>Internship Title:</label>
+      <input type="text" id="internship_title" required>
+      <label>Description:</label>
+      <textarea id="internship_description" rows="4" required></textarea>
+      <label>Location:</label>
+      <input type="text" id="internship_location">
+      <label>Domain:</label>
+      <input type="text" id="internship_domain">
+      <label>Contact Email:</label>
+      <input type="email" id="internship_email">
+      <label>Contact Phone:</label>
+      <input type="text" id="internship_phone">
+      <label>Start Date:</label>
+      <input type="date" id="internship_start_date">
+      <label>End Date:</label>
+      <input type="date" id="internship_end_date">
+      <label>Seats:</label>
+      <input type="number" id="internship_seats" min="1">
+      <label>Whatsapp Number:</label>
+      <input type="text" id="internship_whatsapp">
+      <button type="submit">Post Internship</button>
+    </form>
+    <h3>Posted Internships</h3>
+    <div id="postedInternships"></div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="resultsSection">
+    <h2>Test Results</h2>
+    <input type="text" id="searchBox" placeholder="Search by test name...">
+    <div id="resultsContainer">Loading student submissions...</div>
+  </div>
+</div>
+
+<script>
+// --- Client Info ---
+const clientId   = localStorage.getItem("clientId");
+const clientName = localStorage.getItem("clientName");
+const nameSpan   = document.getElementById("clientName");
+
+if(!clientId || !clientName){
+  alert("Please login first!");
+  window.location.href="client_signup.html";
+}else{
+  nameSpan.textContent = clientName;
+}
+
+// --- Navigation ---
+function navigate(page){
+  document.getElementById("profileCard").style.display="none";
+  document.getElementById("internshipSection").style.display="none";
+  document.getElementById("resultsSection").style.display="none";
+
+  if(page==="profile"){ 
+    document.getElementById("profileCard").style.display="block"; 
+    loadProfile(); 
+  }
+  if(page==="internship"){ 
+    document.getElementById("internshipSection").style.display="block"; 
+    loadPostedInternships();
+  }
+  if(page==="results"){ 
+    document.getElementById("resultsSection").style.display="block"; 
+    loadAllResults(); 
+  }
+}
+
+// --- Logout ---
+function logout(){
+  localStorage.removeItem("clientName");
+  localStorage.removeItem("clientId");
+  alert("Logged out successfully!");
+  window.location.href="landingpage.html";
+}
+
+// --- Load Profile ---
+async function loadProfile(){
+  try{
+    const res = await fetch(`http://localhost:8080/api/clients/${clientId}`);
+    if(!res.ok) throw new Error("Failed to load profile");
+    const d = await res.json();
+    document.getElementById("p_company").textContent = d.company || "";
+    document.getElementById("p_email").textContent = d.email || "";
+    document.getElementById("p_phone").textContent = d.phone || "";
+    document.getElementById("p_address").textContent = d.address || "";
+    document.getElementById("p_contact").textContent = d.contact_person || d.contactPerson || "";
+    document.getElementById("p_details").textContent = d.company_details || d.companyDetails || "";
+  }catch(e){alert(e.message);}
+}
+
+// --- Internship Form Submit ---
+document.getElementById("internshipForm").addEventListener("submit", async(e)=>{
+  e.preventDefault();
+  const payload = {
+    title: document.getElementById("internship_title").value.trim(),
+    description: document.getElementById("internship_description").value.trim(),
+    location: document.getElementById("internship_location").value.trim() || "",
+    domain: document.getElementById("internship_domain").value.trim() || "",
+    contactEmail: document.getElementById("internship_email").value.trim() || "",
+    contactPhone: document.getElementById("internship_phone").value.trim() || "",
+    startDate: document.getElementById("internship_start_date").value || null,
+    endDate: document.getElementById("internship_end_date").value || null,
+    seats: parseInt(document.getElementById("internship_seats").value) || null,
+    whatsapp: document.getElementById("internship_whatsapp").value.trim() || "",
+    clientId: parseInt(clientId)
+  };
+
+  try{
+    const res = await fetch("http://localhost:8080/api/internships",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(payload)
+    });
+    if(!res.ok) throw new Error("Failed to post internship");
+    alert("Internship posted successfully!");
+    document.getElementById("internshipForm").reset();
+    loadPostedInternships();
+  }catch(e){alert(e.message);}
+});
+
+// --- Load Posted Internships ---
+async function loadPostedInternships(){
+  const container = document.getElementById("postedInternships");
+  container.innerHTML = "Loading...";
+  try{
+    const res = await fetch(`http://localhost:8080/api/internships?clientId=${clientId}`);
+    const internships = await res.json();
+    container.innerHTML="";
+    if(internships.length===0){
+      container.innerHTML="<p>No internships posted yet.</p>";
+      return;
+    }
+    internships.forEach(i=>{
+      const div = document.createElement("div");
+      div.innerHTML = `
+        <strong>${i.title}</strong><br>
+        ${i.description || ''}<br>
+        Location: ${i.location || 'N/A'}<br>
+        Domain: ${i.domain || 'N/A'}<br>
+        Contact Email: ${i.contactEmail || 'N/A'}<br>
+        Contact Phone: ${i.contactPhone || 'N/A'}<br>
+        Whatsapp: ${i.whatsapp || 'N/A'}<br>
+        Start Date: ${i.startDate || 'N/A'}<br>
+        End Date: ${i.endDate || 'N/A'}<br>
+        Seats: ${i.seats || 'N/A'}<br>
+        <button onclick="editInternship(${i.id})">Edit</button>
+      `;
+      container.appendChild(div);
+    });
+  }catch(e){container.innerHTML="<p>Error loading internships.</p>"; console.error(e);}
+}
+
+// --- Edit Internship ---
+function editInternship(id){
+  localStorage.setItem("editInternshipId", id);
+  window.location.href="update_internship.html"; 
+}
+
+// --- RESULTS ---
+let allTests = [], allResults = [];
+async function loadAllResults(){
+  const container = document.getElementById("resultsContainer");
+  container.innerHTML = "Loading student submissions...";
+
+  try {
+    const testsRes = await fetch(`http://localhost:8080/api/tests?clientId=${clientId}`);
+    if (!testsRes.ok) throw new Error("Failed to load tests");
+    allTests = await testsRes.json();
+
+    const resRes = await fetch(`http://localhost:8080/api/results/all`);
+    if (!resRes.ok) throw new Error("Failed to load results");
+    const allResultsRaw = await resRes.json();
+
+    allResults = allResultsRaw.filter(r => allTests.some(t => t.id === r.testId));
+
+    renderResults();
+  } catch (err) {
+    container.innerHTML = `<p style="color:red;">${err.message}</p>`;
+  }
+}
+
+// --- Render Results ---
+function renderResults(filterResults = null){
+  const container = document.getElementById("resultsContainer");
+  container.innerHTML = "";
+
+  const resultsToShow = filterResults || allResults;
+
+  if(allTests.length === 0){
+    container.innerHTML = "<p>You have not uploaded any tests yet.</p>";
+    return;
+  }
+
+  allTests.forEach(test => {
+    const submissions = resultsToShow.filter(r => r.testId === test.id);
+    const div = document.createElement("div");
+
+    if(submissions.length === 0){
+      div.innerHTML = `<strong>${test.title}</strong> - Max Marks: ${test.maxMarks}<br>
+                       <em>No student submissions yet</em>`;
+    } else {
+      let submissionHTML = submissions.map(s => 
+        `${s.studentName} (${s.studentEmail}): ${s.marks} / ${s.maxMarks}`
+      ).join("<br>");
+      div.innerHTML = `<strong>${test.title}</strong> - Max Marks: ${test.maxMarks}<br>${submissionHTML}`;
+    }
+
+    container.appendChild(div);
+  });
+}
+
+// --- Search Filter ---
+document.getElementById("searchBox").addEventListener("input", e=>{
+  const term = e.target.value.toLowerCase();
+  const filtered = allResults.filter(r => {
+    const test = allTests.find(t => t.id === r.testId);
+    return test && test.title.toLowerCase().includes(term);
+  });
+  renderResults(filtered);
+});
+
+// --- Auto-refresh results every 15 seconds ---
+setInterval(() => {
+  if(document.getElementById("resultsSection").style.display === "block"){
+    loadAllResults();
+  }
+}, 15000);
+
+</script>
+</body>
+</html>
