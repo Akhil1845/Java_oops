@@ -1,0 +1,22 @@
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is 5 + 3?",
+      "options": ["6", "7", "8", "9"],
+      "answer": "8"
+    },
+    {
+      "id": 2,
+      "question": "What is 12 - 4?",
+      "options": ["6", "7", "8", "9"],
+      "answer": "8"
+    },
+    {
+      "id": 3,
+      "question": "What is 3 x 6?",
+      "options": ["15", "16", "17", "18"],
+      "answer": "18"
+    }
+  ]
+}
