@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Take Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet" />
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Poppins",sans-serif;}
+body{
+  min-height:100vh;
+  background:linear-gradient(120deg,#e0f7fa,#b3e5fc,#81d4fa,#a7c7e7,#dbeafe);
+  background-size:1200% 1200%;
+  animation:bgmove 16s ease infinite;
+  color:#253858;
+  padding:40px;
+}
+@keyframes bgmove{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%;}}
+
+h1{font-size:2rem;font-weight:700;margin-bottom:20px;color:#253858;}
+#backBtn{padding:10px 16px;border:none;border-radius:6px;background:#1e90ff;color:white;cursor:pointer;font-weight:600;margin-bottom:20px;}
+
+.test-container{display:flex;flex-direction:column;gap:20px;}
+.test-card{
+  background:#ccc;padding:15px;border-radius:10px;
+  box-shadow:0 5px 10px rgba(0,0,0,0.2);
+  color:#253858;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:0.3s;
+}
+.test-card:hover{background:#1e90ff;color:#fff;}
+.test-info{display:flex;flex-direction:column;}
+.test-info span{font-size:0.9rem;color:#333;}
+button.attempt-btn{padding:8px 12px;border:none;border-radius:6px;background:#1e90ff;color:white;cursor:pointer;font-weight:600;}
+
+#testModal{
+  display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.8);justify-content:center;align-items:center;z-index:1000;
+}
+#testModalContent{
+  background:#fff;padding:20px;border-radius:12px;max-width:800px;width:90%;
+  max-height:80vh;overflow-y:auto;color:#000;
+}
+#testModalContent h2{margin-bottom:15px;}
+.question-block{margin-bottom:12px;}
+.question-block input[type="text"]{width:100%;padding:8px;border-radius:5px;border:1px solid #ccc;}
+.modal-btn{margin-top:15px;padding:10px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:600;}
+.submit-btn{background:#1e90ff;color:#fff;}
+.close-btn{background:#555;color:#fff;margin-left:10px;}
+#message{margin-top:15px;font-weight:600;color:#ffa94d;}
+</style>
+</head>
+<body>
+
+<h1>Welcome, <span id="studentName">Student</span>!</h1>
+<button id="backBtn" onclick="goBack()">← Back to Dashboard</button>
+
+<div class="test-container" id="testsContainer">Loading tests...</div>
+
+<!-- Modal for attempting test -->
+<div id="testModal">
+  <div id="testModalContent">
+    <h2 id="modalTitle"></h2>
+    <div id="questionsContainer"></div>
+    <button class="modal-btn submit-btn" onclick="submitTest()">Submit Test</button>
+    <button class="modal-btn close-btn" onclick="closeModal()">Close</button>
+    <div id="message"></div>
+  </div>
+</div>
+
+<script>
+const API_BASE = "http://localhost:8080/api/tests";
+const RESULTS_API = "http://localhost:8080/api/results/submit";
+
+const studentId = localStorage.getItem("studentId");
+const studentName = localStorage.getItem("studentName") || "Student";
+
+if(!studentId){
+    alert("Please login first!");
+    window.location.href = "student_login.html";
+} else {
+    document.getElementById("studentName").innerText = studentName;
+}
+
+let currentTest = null;
+
+// Go back to dashboard
+function goBack(){
+    window.location.href = "student_dashboard.html";
+}
+
+// Load all tests
+async function loadTests(){
+    const container = document.getElementById("testsContainer");
+    container.innerHTML = "Loading tests...";
+
+    try {
+        const res = await fetch(`${API_BASE}`);
+        if(!res.ok) throw new Error(`Server responded ${res.status}`);
+        const tests = await res.json();
+
+        if(!tests || tests.length === 0){
+            container.innerHTML = "<p>No tests available yet.</p>";
+            return;
+        }
+
+        container.innerHTML = "";
+        tests.forEach(test => {
+            const card = document.createElement("div");
+            card.className = "test-card";
+
+            const info = document.createElement("div");
+            info.className = "test-info";
+            info.innerHTML = `
+                <strong>${test.title}</strong>
+                <span>Topic: ${test.topic || 'N/A'}</span>
+                <span>Uploaded by: ${test.client ? test.client.name : 'Unknown'}</span>
+                <span>Max Marks: ${test.maxMarks != null ? test.maxMarks : (test.questions ? test.questions.length : 'N/A')}</span>
+            `;
+
+            const btn = document.createElement("button");
+            btn.className = "attempt-btn";
+            btn.textContent = "Attempt";
+            btn.onclick = () => openModal(test);
+
+            card.appendChild(info);
+            card.appendChild(btn);
+            container.appendChild(card);
+        });
+
+    } catch(err){
+        console.error(err);
+        container.innerHTML = `<p style="color:red;">Error loading tests: ${err.message}</p>`;
+    }
+}
+
+// Open modal to attempt a test
+function openModal(test){
+    currentTest = test;
+    document.getElementById("modalTitle").innerText = test.title;
+
+    const qContainer = document.getElementById("questionsContainer");
+    qContainer.innerHTML = "";
+
+    (test.questions || []).forEach((q, i) => {
+        const block = document.createElement("div");
+        block.className = "question-block";
+
+        block.innerHTML = `<p><strong>Q${i+1}:</strong> ${q.question || ''}</p>`;
+
+        if(q.options && q.options.length){
+            q.options.forEach(opt => {
+                const id = `q${i}_${opt}`;
+                block.innerHTML += `<label><input type="radio" name="q${i}" value="${opt}" id="${id}"> ${opt}</label><br>`;
+            });
+        } else {
+            block.innerHTML += `<input type="text" name="q${i}" placeholder="Your answer" />`;
+        }
+
+        qContainer.appendChild(block);
+    });
+
+    document.getElementById("testModal").style.display = "flex";
+}
+
+// Close modal
+function closeModal(){
+    document.getElementById("testModal").style.display = "none";
+    document.getElementById("message").innerText = "";
+}
+
+// Submit test answers
+async function submitTest(){
+    if(!currentTest) return;
+
+    const qContainer = document.getElementById("questionsContainer");
+    let score = 0;
+
+    (currentTest.questions || []).forEach((q,i) => {
+        let ans = "";
+        const chosen = qContainer.querySelector(`input[name="q${i}"]:checked`);
+        const textAns = qContainer.querySelector(`input[name="q${i}"]:not([type=radio])`);
+        if(chosen) ans = chosen.value.trim();
+        else if(textAns) ans = textAns.value.trim();
+
+        if(ans && q.answer && ans === q.answer) score++;
+    });
+
+    const maxMarks = currentTest.maxMarks || (currentTest.questions ? currentTest.questions.length : 0);
+    document.getElementById("message").innerText = `You scored ${score} / ${maxMarks}`;
+
+    try {
+        const res = await fetch(`${RESULTS_API}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                studentId: parseInt(studentId),
+                testId: currentTest.id,
+                score: score
+            })
+        });
+
+        if(!res.ok) throw new Error(`Server responded with ${res.status}`);
+        closeModal();
+        alert("Your result has been saved successfully!");
+    } catch(err){
+        console.error("Failed to save result:", err);
+        document.getElementById("message").innerText = "Failed to save result. Try again!";
+    }
+}
+
+window.addEventListener("DOMContentLoaded", loadTests);
+</script>
+
+</body>
+</html>

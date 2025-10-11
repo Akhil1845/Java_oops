@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Upload Test</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet" />
+<style>
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Poppins', sans-serif; }
+body { min-height:100vh; background:linear-gradient(#3d1a00,#000); color:#fff; padding:40px; }
+
+h1 { color:#FF8C00; margin-bottom:20px; }
+
+/* Form Styling */
+form {
+    background:#ffffff10;
+    padding:20px;
+    border-radius:12px;
+    max-width:800px;
+    box-shadow:0 0 15px rgba(0,0,0,.3);
+    margin-bottom:40px;
+}
+label { display:block; margin:8px 0 4px; }
+input, textarea, select { width:100%; padding:10px; border-radius:6px; border:none; margin-bottom:10px; }
+button { padding:10px 16px; border:none; border-radius:6px; background:#FF8C00; color:#fff; font-weight:600; cursor:pointer; margin-top:10px; }
+#backBtn { background:#FF8C00; margin-bottom:20px; }
+
+/* Grid for test cards - two per row */
+#testsContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+/* Individual Card */
+.test-card {
+    background:#ffffff10;
+    padding:20px;
+    border-radius:12px;
+    box-shadow:0 0 10px rgba(0,0,0,.3);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    min-height:180px;
+}
+.test-card h2 { color:#FF8C00; margin-bottom:10px; }
+.test-card p { margin-bottom:15px; }
+.test-card button { align-self:flex-start; }
+</style>
+</head>
+<body>
+
+<h1>Upload New Test</h1>
+<button id="backBtn" onclick="goBack()">← Back to Dashboard</button>
+
+<form id="testForm">
+  <label>Test Title</label>
+  <input type="text" id="testTitle" required>
+
+  <label>Description</label>
+  <textarea id="testDescription" rows="3"></textarea>
+
+  <label>Topic</label>
+  <input type="text" id="testTopic">
+
+  <label>Maximum Marks</label>
+  <input type="number" id="maxMarks" min="1" required>
+
+  <label>Upload Questions JSON File</label>
+  <input type="file" id="questionsFile" accept=".json" required>
+
+  <button type="submit">Upload Test</button>
+</form>
+
+<h1>Your Uploaded Tests</h1>
+<div id="testsContainer">
+  <!-- Test cards will appear here -->
+</div>
+
+<script>
+const clientId = localStorage.getItem("clientId");
+if(!clientId){
+    alert("Please login first!");
+    window.location.href="client_signup.html";
+}
+
+function goBack(){ window.location.href = "client_dashboard.html"; }
+
+// --- Handle test upload ---
+document.getElementById("testForm").addEventListener("submit", async e => {
+    e.preventDefault();
+
+    const title = document.getElementById("testTitle").value.trim();
+    const description = document.getElementById("testDescription").value.trim();
+    const topic = document.getElementById("testTopic").value.trim();
+    const maxMarks = parseInt(document.getElementById("maxMarks").value);
+    const fileInput = document.getElementById("questionsFile");
+
+    if(!fileInput.files.length){
+        alert("Please upload a JSON file with questions!");
+        return;
+    }
+
+    let questions = [];
+    try {
+        const text = await fileInput.files[0].text();
+        const data = JSON.parse(text);
+        if(!data.questions || !Array.isArray(data.questions)) throw new Error("Invalid JSON format");
+        questions = data.questions;
+    } catch(err) {
+        alert("Failed to read JSON file: " + err.message);
+        return;
+    }
+
+    const payload = { title, description, topic, maxMarks, questions };
+
+    try {
+        const res = await fetch(`http://localhost:8080/api/tests?clientId=${clientId}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        if(!res.ok) throw new Error("Failed to upload test");
+        alert("✅ Test uploaded successfully!");
+        document.getElementById("testForm").reset();
+        loadTests();
+    } catch(err) {
+        console.error(err);
+        alert("❌ Error uploading test: " + err.message);
+    }
+});
+
+// --- Fetch and display uploaded tests ---
+async function loadTests() {
+    const container = document.getElementById("testsContainer");
+    container.innerHTML = "Loading tests...";
+
+    try {
+        const res = await fetch(`http://localhost:8080/api/tests/client/${clientId}`);
+        if(!res.ok) throw new Error("Failed to load tests");
+        const tests = await res.json();
+
+        if(!tests.length){
+            container.innerHTML = "<p>No tests uploaded yet.</p>";
+            return;
+        }
+
+        container.innerHTML = "";
+        tests.forEach(test => {
+            const card = document.createElement("div");
+            card.className = "test-card";
+            card.innerHTML = `
+                <h2>${test.title}</h2>
+                <p><strong>Topic:</strong> ${test.topic || "N/A"}</p>
+                <p><strong>Max Marks:</strong> ${test.maxMarks || "N/A"}</p>
+                <button onclick="viewResults(${test.id})">View Results</button>
+            `;
+            container.appendChild(card);
+        });
+    } catch(err) {
+        console.error(err);
+        container.innerHTML = `<p style="color:red">Error loading tests: ${err.message}</p>`;
+    }
+}
+
+function viewResults(testId){
+    localStorage.setItem("selectedTestId", testId);
+    window.location.href = "test_results.html";
+}
+
+// Initial load
+loadTests();
+</script>
+
+</body>
+</html>

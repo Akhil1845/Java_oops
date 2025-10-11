@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Update Profile</title>
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap"
+  />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+  />
+  <style>
+    * {margin: 0; padding: 0; box-sizing: border-box;}
+    body {
+      min-height: 100vh;
+      font-family: "Poppins", sans-serif;
+      color: white;
+      background: linear-gradient(
+        270deg,
+        #cddce5,
+        #5a6084,
+        #4a5d5c,
+        #c4dee9,
+        #535c62
+      );
+      background-size: 1200% 1200%;
+      animation: bgmove 16s ease infinite;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    @keyframes bgmove {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+    .update-container {
+      background: rgba(0,0,0,0.4);
+      padding: 30px 25px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 500px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #70baff;
+      text-shadow: 0 0 3px #2c67b4;
+    }
+    label {
+      display: block;
+      font-size: 0.95rem;
+      margin: 10px 0 5px 0;
+      color: #e0e0e0;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      background: #2b2d36;
+      color: #fff;
+      margin-bottom: 10px;
+      font-size: 0.95rem;
+    }
+    .update-btn {
+      width: 100%;
+      padding: 12px;
+      background: #70baff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.3s;
+    }
+    .update-btn:hover {
+      background: #3789cb;
+    }
+    .back-btn {
+      margin-top: 12px;
+      display: inline-block;
+      text-decoration: none;
+      color: #70baff;
+      font-weight: 600;
+      transition: color 0.3s;
+    }
+    .back-btn:hover {color: #3789cb;}
+  </style>
+</head>
+<body>
+  <div class="update-container">
+    <h2>Update Your Profile</h2>
+    <form id="updateProfileForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" />
+
+      <label for="className">Class</label>
+      <input type="text" id="className" />
+
+      <label for="stream">Stream</label>
+      <input type="text" id="stream" />
+
+      <label for="program">Program</label>
+      <input type="text" id="program" />
+
+      <label for="semester">Semester</label>
+      <input type="text" id="semester" />
+
+      <label for="skills">Skills</label>
+      <input type="text" id="skills" placeholder="e.g., Java, Python" />
+
+      <label for="phone">Phone</label>
+      <input type="text" id="phone" />
+
+      <label for="address">Address</label>
+      <input type="text" id="address" />
+
+      <button type="submit" class="update-btn">Save Changes</button>
+    </form>
+    <a class="back-btn" href="student_dashboard.html">← Back to Dashboard</a>
+  </div>
+
+  <script>
+    const studentId = localStorage.getItem("studentId");
+    if (!studentId) {
+      alert("Please login first!");
+      window.location.href = "student.html";
+    }
+
+    let studentData = {
+      id: studentId,
+      name: localStorage.getItem("studentName") || "",
+      email: localStorage.getItem("studentEmail") || "",
+      className: localStorage.getItem("studentClass") || "",
+      stream: localStorage.getItem("studentStream") || "",
+      program: localStorage.getItem("studentProgram") || "",
+      semester: localStorage.getItem("studentSemester") || "",
+      skills: localStorage.getItem("studentSkills") || "",
+      phone: localStorage.getItem("studentPhone") || "",
+      address: localStorage.getItem("studentAddress") || ""
+    };
+
+    // Populate form with existing data
+    window.onload = () => {
+      document.getElementById("name").value = studentData.name;
+      document.getElementById("email").value = studentData.email;
+      document.getElementById("className").value = studentData.className;
+      document.getElementById("stream").value = studentData.stream;
+      document.getElementById("program").value = studentData.program;
+      document.getElementById("semester").value = studentData.semester;
+      document.getElementById("skills").value = studentData.skills;
+      document.getElementById("phone").value = studentData.phone;
+      document.getElementById("address").value = studentData.address;
+    };
+
+    document.getElementById("updateProfileForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      studentData.name = document.getElementById("name").value;
+      studentData.email = document.getElementById("email").value;
+      studentData.className = document.getElementById("className").value;
+      studentData.stream = document.getElementById("stream").value;
+      studentData.program = document.getElementById("program").value;
+      studentData.semester = document.getElementById("semester").value;
+      studentData.skills = document.getElementById("skills").value;
+      studentData.phone = document.getElementById("phone").value;
+      studentData.address = document.getElementById("address").value;
+
+      try {
+        const res = await fetch(`http://localhost:8080/api/students/${studentId}`, {
+          method: 'PUT',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify(studentData)
+        });
+        if (!res.ok) throw new Error("Server Error " + res.status);
+        const updated = await res.json();
+
+        // Save updated info to localStorage
+        Object.entries({
+          studentName: updated.name || "",
+          studentEmail: updated.email || "",
+          studentClass: updated.className || "",
+          studentStream: updated.stream || "",
+          studentProgram: updated.program || "",
+          studentSemester: updated.semester || "",
+          studentSkills: updated.skills || "",
+          studentPhone: updated.phone || "",
+          studentAddress: updated.address || ""
+        }).forEach(([k,v]) => localStorage.setItem(k,v));
+
+        alert("Profile updated successfully!");
+        window.location.href = "student_dashboard.html";
+      } catch(err) {
+        console.error(err);
+        alert("Error connecting to the server. Make sure backend is running.");
+      }
+    });
+  </script>
+</body>
+</html>

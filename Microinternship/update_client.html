@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Client Profile</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(#3d1a00, #000000);
+      color: white;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background: rgba(255,255,255,0.05);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    }
+    h2 {
+      text-align: center;
+      color: #FF8C00;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: 600;
+      display: block;
+      margin-top: 12px;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 20px;
+      background: #FF8C00;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    button:hover { background: #e67a00; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Update Your Profile</h2>
+    <form id="updateForm">
+      <label>Company Name</label>
+      <input type="text" id="company_name" required>
+
+      <label>Email (read-only)</label>
+      <input type="email" id="email" disabled>
+
+      <label>Phone</label>
+      <input type="text" id="phone">
+
+      <label>Address</label>
+      <input type="text" id="address">
+
+      <label>Contact Person</label>
+      <input type="text" id="contact_person">
+
+      <label>Company Details</label>
+      <textarea id="company_details" rows="4"></textarea>
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+
+<script>
+  const clientId = localStorage.getItem("clientId");
+  if (!clientId) {
+    alert("Please login first!");
+    window.location.href = "clientLogin.html";
+  }
+
+  // Load data from backend
+  window.addEventListener("DOMContentLoaded", async () => {
+    try {
+      const res = await fetch(`http://localhost:8080/api/clients/${clientId}`);
+      if (!res.ok) throw new Error("Failed to fetch profile");
+      const data = await res.json();
+      document.getElementById("company_name").value = data.company_name || "";
+      document.getElementById("email").value = data.email || "";
+      document.getElementById("phone").value = data.phone || "";
+      document.getElementById("address").value = data.address || "";
+      document.getElementById("contact_person").value = data.contact_person || "";
+      document.getElementById("company_details").value = data.company_details || "";
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+
+  // Submit form
+  document.getElementById("updateForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const payload = {
+      company_name: document.getElementById("company_name").value,
+      phone: document.getElementById("phone").value,
+      address: document.getElementById("address").value,
+      contact_person: document.getElementById("contact_person").value,
+      company_details: document.getElementById("company_details").value
+    };
+    try {
+      const res = await fetch(`http://localhost:8080/api/clients/${clientId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error("Update failed");
+      alert("Profile updated successfully!");
+      window.location.href = "client_dashboard.html";
+    } catch (err) {
+      alert(err.message);
+    }
+  });
+</script>
+</body>
+</html>
