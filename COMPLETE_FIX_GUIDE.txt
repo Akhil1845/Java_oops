@@ -1,0 +1,95 @@
+================================================================================
+                    COMPLETE DATABASE FIX GUIDE
+================================================================================
+
+PROBLEM: Column type mismatch between clients.id (needs BIGINT) and 
+         internships.client_id / tests.client_id (currently INT)
+
+================================================================================
+                         SOLUTION - 3 SIMPLE STEPS
+================================================================================
+
+STEP 1: OPEN MYSQL
+------------------
+Open MySQL Workbench or MySQL Command Line Client
+Connect to your database with:
+  Username: root
+  Password: Akhil@2006
+  Database: skill_bridge
+
+
+STEP 2: RUN THIS SQL (Copy everything below the line)
+------------------
+USE skill_bridge;
+ALTER TABLE internships DROP FOREIGN KEY internships_ibfk_1;
+ALTER TABLE tests DROP FOREIGN KEY IF EXISTS test_ibfk_1;
+ALTER TABLE internships MODIFY COLUMN client_id BIGINT NOT NULL;
+ALTER TABLE tests MODIFY COLUMN client_id BIGINT NOT NULL;
+ALTER TABLE clients MODIFY COLUMN id BIGINT NOT NULL AUTO_INCREMENT;
+ALTER TABLE internships ADD CONSTRAINT internships_ibfk_1 FOREIGN KEY (client_id) REFERENCES clients(id);
+ALTER TABLE tests ADD CONSTRAINT tests_ibfk_1 FOREIGN KEY (client_id) REFERENCES clients(id);
+------------------
+
+
+STEP 3: RESTART YOUR SPRING BOOT APPLICATION
+------------------
+1. Stop the running application (if it's running)
+2. Start it again
+3. The error should be gone!
+
+
+================================================================================
+                              VERIFICATION
+================================================================================
+
+After running the SQL, verify by running:
+  DESCRIBE clients;
+  DESCRIBE internships;
+  DESCRIBE tests;
+
+You should see:
+  - clients.id = BIGINT
+  - internships.client_id = BIGINT  
+  - tests.client_id = BIGINT
+
+
+================================================================================
+                           WHAT WAS CHANGED
+================================================================================
+
+Backend Code:
+  ✓ Client.java - Added @Table(name = "clients")
+  ✓ Internship.java - Changed to use @ManyToOne Client relationship
+  ✓ Test.java - Updated table name to "tests"
+  ✓ InternshipService.java - Added Client entity validation
+  ✓ InternshipController.java - Updated to accept clientId as parameter
+  ✓ client_dashboard.html - Fixed to send clientId as query parameter
+  ✓ application.properties - Disabled auto-DDL temporarily
+
+Database:
+  ✓ Changed all ID columns from INT to BIGINT
+  ✓ Recreated foreign key constraints with matching types
+
+
+================================================================================
+                              AFTER THE FIX
+================================================================================
+
+You can optionally change application.properties back to:
+  spring.jpa.hibernate.ddl-auto=validate
+
+Or keep it as "none" for manual schema control.
+
+
+================================================================================
+                           NEED HELP?
+================================================================================
+
+If you get any errors:
+1. Make sure MySQL is running
+2. Check you're connected to the right database (skill_bridge)
+3. Verify you have permission to alter tables
+4. Check the error message and refer to DATABASE_FIX_INSTRUCTIONS.md
+
+
+================================================================================
