@@ -1,41 +1,47 @@
-# -------------------------------
-# Stage 1: Build the JAR
-# -------------------------------
+# ----------------------------------------------------
+# Stage 1: Build the JAR (using Maven to compile code)
+# ----------------------------------------------------
+# Use a Maven image with Java 17 for the build environment
 FROM maven:3.9.0-eclipse-temurin-17 AS build
 
-# Set working directory
+# Set the working directory for the build process
 WORKDIR /app
 
-# Copy pom.xml first to leverage Docker cache
+# Copy pom.xml first to leverage Docker cache for dependencies
 COPY pom.xml ./
 
-# Download dependencies
+# Download dependencies (if pom.xml hasn't changed, this step is cached)
 RUN mvn dependency:go-offline
 
-# Copy source code
+# Copy application source code
 COPY src ./src
 
-# Build Spring Boot JAR (skip tests for faster build)
+# Build the Spring Boot JAR (skip tests for faster build)
+# The resulting JAR is named SkillBridge-0.0.1-SNAPSHOT.jar in the target folder
 RUN mvn clean package -DskipTests
 
-# -------------------------------
-# Stage 2: Run the application
-# -------------------------------
-FROM eclipse-temurin:17-jdk-jammy
+# ----------------------------------------------------
+# Stage 2: Run the application (using only JRE for runtime)
+# ----------------------------------------------------
+# Use a lightweight JRE image (Java Runtime Environment) for the final container
+FROM eclipse-temurin:17-jre-jammy
 
-# Set working directory
+# Set the working directory inside the final container
 WORKDIR /app
 
-# Copy JAR from build stage
+# Copy the final JAR from the 'build' stage
+# Ensure this JAR name matches the output of your Maven build
 COPY --from=build /app/target/SkillBridge-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose port (documentation only)
+# Expose the application port (documentation only)
 EXPOSE 8080
 
-# PostgreSQL environment variables (optional, can be overridden by Render)
+# Environment variables for PostgreSQL (can be overridden by environment)
+# These are optional since they are also in application.properties,
+# but defining them here makes them environment-specific if needed.
 ENV SPRING_DATASOURCE_URL=jdbc:postgresql://dpg-d424dp63jp1c73ab0bug-a.oregon-postgres.render.com:5432/skillbridge_db_dd17
 ENV SPRING_DATASOURCE_USERNAME=skillbridge_db_dd17_user
 ENV SPRING_DATASOURCE_PASSWORD=GiG2ATdFk4rSA4ggxqLIk4l3e4lrk11d
 
-# Start Spring Boot app
+# Start the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
