@@ -21,7 +21,7 @@ public class Test {
     private Integer maxMarks;
 
     // Store questions as JSON in DB using converter
-    @Column(columnDefinition = "LONGTEXT")
+    @Column(columnDefinition = "TEXT") // PostgreSQL compatible
     @Convert(converter = JsonConverter.class)
     private List<Map<String, Object>> questions;
 
